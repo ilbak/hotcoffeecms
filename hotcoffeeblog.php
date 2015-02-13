@@ -11,7 +11,7 @@
 $blogpass="change";
 // Blog tags separated with a comma
 $blogtag="penso,scrivo,eventi";
-// Number of characters in the preview post
+// Number of characters in the post preview
 $bloganteprima=800;
 
 
@@ -26,10 +26,12 @@ $blogpostcommenti="";
 
 
 // RSS feed Information
-// Blog author mail
-$blogmail="ilbak@ilbak.it";
-$blogfeedtitolo="Il BaK, il feed, Reggio Calabria ed un sito...";
-$blogfeeddesc="Il blog del BaK: Notizie, vita, scritti, detti, fatti...";
+// Author mail
+$blogmail="author@blog.site";
+// Title
+$blogfeedtitolo="RSS Feed: ".$cmsurl;
+// Description
+$blogfeeddesc="The ".$cmsurl." RSS Feed";
 
 /* End Setup */
 
@@ -76,7 +78,7 @@ function bbcode($var,$blogtag) {
 		'<font size="$1">$2</font>',
 		'<font color="$1">$2</font>',
 		'<span style="background:#000000">$1</span>',
-		'<div align=center><a href="http://youtu.be/$1" target="_blank"><DIV STYLE="position:static; top:00px; left:00px; width:480px; height:250px; visibility:visible "><img src="http://img.youtube.com/vi/$1/0.jpg" border=2></DIV><DIV STYLE="position:static; top:00px; left:00px; width:400px; height:100px; visibility:visible"><h2><img src="http://www.ilbak.it/images/ilbak.it.youtube-play.png"></h2></DIV></a></div>',
+		'<div align=center><a href="http://youtu.be/$1" target="_blank"><DIV STYLE="position:static; top:00px; left:00px; width:480px; height:250px; visibility:visible "><img src="http://img.youtube.com/vi/$1/0.jpg" border=2></DIV><DIV STYLE="position:static; top:00px; left:00px; width:400px; height:100px; visibility:visible"><h2>> Play</h2></DIV></a></div>',
 		);
         
 	while(preg_match("#\[quote\](.*?)\[\/quote\]#is", $var)!=0)
@@ -197,10 +199,10 @@ function sociallink($bloglink, $bloglinktitolo) {
 	global $cmsurl, $pag;
 	$bloglink=urlencode($cmsurl."index.php?pag=".$pag."&post=".$bloglink);
 	
-	echo "<a href='http://www.facebook.com/sharer/sharer.php?u=".$bloglink."&amp;t=".$bloglinktitolo."' target='_blank' title='Share \"$bloglinktitolo\" on Facebook'><img src='Home-facebook.png'></a>&nbsp;&nbsp;";
-	echo "<a href='https://twitter.com/intent/tweet?text=".urlencode($bloglinktitolo)."&url=".$bloglink."' target='_blank' title='Share \"$bloglinktitolo\" on Twitter'><img src='Home-twitter.png'></a>&nbsp;&nbsp;";
-	echo "<a href='https://plus.google.com/share?url=".$bloglink."&t=".urlencode($bloglinktitolo)."' target='_blank' title='Share \"$bloglinktitolo\" on Google+'><img src='Home-google.png'></a>&nbsp;&nbsp;";
-	echo "<a href='mailto:indirizzo@destinatario.it?subject=Post ".$bloglinktitolo."&body=Segnalazione post ".$bloglinktitolo.": ".$bloglink.".  ' title='Share \"$bloglinktitolo\" via e-mail'><img src='Home-mail.png'></a>&nbsp;&nbsp;";
+	echo "<a href='http://www.facebook.com/sharer/sharer.php?u=".$bloglink."&amp;t=".$bloglinktitolo."' target='_blank' title='Share \"$bloglinktitolo\" on Facebook'>[f]</a>&nbsp;&nbsp;";
+	echo "<a href='https://twitter.com/intent/tweet?text=".urlencode($bloglinktitolo)."&url=".$bloglink."' target='_blank' title='Share \"$bloglinktitolo\" on Twitter'>[t]</a>&nbsp;&nbsp;";
+	echo "<a href='https://plus.google.com/share?url=".$bloglink."&t=".urlencode($bloglinktitolo)."' target='_blank' title='Share \"$bloglinktitolo\" on Google+'>[g+]</a>&nbsp;&nbsp;";
+	echo "<a href='mailto:indirizzo@destinatario.it?subject=Post ".$bloglinktitolo."&body=Segnalazione post ".$bloglinktitolo.": ".$bloglink.".  ' title='Share \"$bloglinktitolo\" via e-mail'>[m]</a>&nbsp;&nbsp;";
 	
 }
 
