@@ -10,7 +10,7 @@
 // Password for blog author (change it!)
 $blogpass="change";
 // Blog tags separated with a comma
-$blogtag="penso,scrivo,eventi";
+$blogtag="news,life,events";
 // Number of characters in the post preview
 $bloganteprima=800;
 
