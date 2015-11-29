@@ -18,8 +18,9 @@ $bloganteprima=800;
 // Message of the day
 $blogmotd="";
 
-// Code to embed in the separation between the posts
-$blogpostsepare= "";
+// Code to embed in the separation before and after the posts
+$blogpostbefore="";
+$blogpostafter= "";
 
 // Embed the end of a message (eg service comments)
 $blogpostcommenti="";
@@ -274,6 +275,7 @@ case 0:
 						// Post preview
 						$blogjunk6 = strpos($blogpost, "||");
 						if ($blogjunk6 !== false) { $bloganteprima2=$blogjunk6; } else { $bloganteprima2=$bloganteprima; }
+						echo $blogpostbefore;
 						echo "<div align=center><h3><a href='index.php?pag=".$pag."&post=".$blogjunk4[1]."'><b>".$blogtitolo."</b></a></h3></div><br>".bbcode(substr($blogpost, 0, $bloganteprima2), $blogtag);
 						if (strlen($blogpost) > $bloganteprima2) { echo "<br><a href='index.php?pag=".$pag."&post=".$blogjunk4[1]."'><i>[ More... ]</i></a>"; }
 						echo "<div align=right>";
@@ -283,7 +285,7 @@ case 0:
 						
 						sociallink($bloglink, $bloglinktitolo);
 						echo "[".date("d/m/y",$blogjunk4[1]). "]</div>";
-						echo $blogpostsepare;
+						echo $blogpostafter;
 						
 					}
 				}
@@ -322,6 +324,7 @@ case 1:
 		$blogtitolo = stripslashes($blogtitolo);
 		$blogpost = stripslashes($blogpost);
 		
+		echo $blogpostbefore;
 		echo "<script type='text/javascript'>document.title='".$blogtitolo."';</script>";
 		echo "<div align=center><h3><b>".$blogtitolo."</b></h3></div><br>".bbcode($blogpost, $blogtag);
 		echo "<div align=right>";
@@ -330,7 +333,7 @@ case 1:
 		$bloglinktitolo=$blogtitolo;
 		sociallink($bloglink, $bloglinktitolo);
 		echo "[".date("d/m/y",$blogjunk4[1]). "]</div>";
-		echo $blogpostsepare;
+		echo $blogpostafter;
 		
 		echo "<br>";
 		
@@ -520,6 +523,7 @@ case 6:
 					//Anteprima del post
 					$blogjunk6 = strpos($blogpost, "||");
 					if ($blogjunk6 !== false) { $bloganteprima2=$blogjunk6; } else { $bloganteprima2=$bloganteprima; }
+					echo $blogpostbefore;
 					echo "<div align=center><h3><a href='index.php?pag=".$pag."&post=".$blogjunk4[1]."'><b>".$blogtitolo."</b></a></h3></div><br>".bbcode(substr($blogpost, 0, $bloganteprima2), $blogtag);
 					if (strlen($blogpost) > $bloganteprima2) { echo "<br><a href='index.php?pag=".$pag."&post=".$blogjunk4[1]."'><i>[ Continua... ]</i></a>"; }
 					echo "<div align=right>";
@@ -528,7 +532,7 @@ case 6:
 					$bloglinktitolo=$blogtitolo;
 					sociallink($bloglink, $bloglinktitolo);
 					echo "[".date("d/m/y",$blogjunk4[1]). "]</div>";
-					echo $blogpostsepare;
+					echo $blogpostafter;
 					
 					
 				}
