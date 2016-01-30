@@ -340,7 +340,7 @@ case 1:
 		echo $blogpostcommenti;    
 		
 		
-		echo "<br><br><a href='index.php?pag=".$pag."&blogobj=4&post=".$post."'>&nbsp;&nbsp;&nbsp;&nbsp;[ Modifica ]&nbsp;&nbsp;&nbsp;&nbsp;";
+		echo "<br><br><a href='index.php?pag=".$pag."&blogobj=4&post=".$post."'>&nbsp;&nbsp;&nbsp;&nbsp;[ Edit ]&nbsp;&nbsp;&nbsp;&nbsp;";
 		echo "<a href='index.php?pag=".$pag."'>&nbsp;&nbsp;&nbsp;&nbsp;[ Back ]&nbsp;&nbsp;&nbsp;&nbsp;</a><br>";
 		echo "<br>";
 	} else {
@@ -400,7 +400,7 @@ case 2:
 		echo "<input type='hidden' name='blogedit' value='1'>";
 		echo "<input type='hidden' name='pag' value='.$pag.'>";
 		echo "<center>Title:<br><input type='text' name='blogmodtitolo' value='....' size='40'><br/>";
-		echo "Content:<br><textarea name='blogmodpost' rows=20 cols=40>Content.</textarea>";
+		echo "Content:<br><textarea name='blogmodpost' rows=20 cols=40 id='mytextarea'>Content.</textarea>";
 		
 		
 		echo "<br><br><fieldset><legend>BBCode</legend>[left]A sinistra[left] - [center]Centrato[/center] - [right]A destra[/right] - [justify]Giustificato[/justify]<br>[b]Grassetto[/b] - [u]Sottolineato[/u] - [i]Corsivo[/i] - [del]Cancellato[/del]<br>[color=red]Colore[/color] - [size=40]Dimensione[/size] - [spoiler]Nascosto[/spoiler]<br>[quote]Citazione[/quote] - [code]Codice[/code] - [youtube]Codice video[/youtube]<br>[url=http://www.sitoda.linkare/]Link[/url] - [img]http://www.Immagine.gif[/img]<br></fieldset><br>";
@@ -466,13 +466,13 @@ case 4:
 	} else {
 		$blogpost = str_replace("<br />", "\n", $blogpost);
 		
-		echo "<form method='post'><fieldset><legend>Modifica post</legend>";
+		echo "<form method='post'><fieldset><legend>Edit</legend>";
 		echo "<input type='hidden' name='blogobj' value='4'>";
 		echo "<input type='hidden' name='blogedit' value='1'>";
 		echo "<input type='hidden' name='pag' value='.$pag.'>";
 		echo "<input type='hidden' name='post' value='.$post.'>";
 		echo "<center>Titolo:<br><input type='text' name='blogmodtitolo' value='".stripslashes($blogtitolo)."' size='40'><br/>";
-		echo "Post:<br><textarea name='blogmodpost' rows=20 cols=40>".stripslashes($blogpost)."</textarea>";
+		echo "Post:<br><textarea name='blogmodpost' rows=20 cols=40 id='mytextarea'>".stripslashes($blogpost)."</textarea>";
 		
 		echo "<br><br><fieldset><legend>BBCode</legend>[left]A sinistra[left] - [center]Centrato[/center] - [right]A destra[/right] - [justify]Giustificato[/justify]<br>[b]Grassetto[/b] - [u]Sottolineato[/u] - [i]Corsivo[/i] - [del]Cancellato[/del]<br>[color=red]Colore[/color] - [size=40]Dimensione[/size] - [spoiler]Nascosto[/spoiler]<br>[quote]Citazione[/quote] - [code]Codice[/code] - [youtube]Codice video[/youtube]<br>[url=http://www.sitoda.linkare/]Link[/url] - [img]http://www.Immagine.gif[/img]<br></fieldset><br>";
 		echo "<br>Password: <input type='password' name='blogmodpass' value='' size='15'><br/>";
@@ -546,3 +546,16 @@ case 6:
 	
 }
 ?>
+  <script src='http://cdn.tinymce.com/4/tinymce.min.js'></script>
+  <script>
+  tinymce.init({
+    selector: '#mytextarea',
+ height: 500,
+ plugins: [
+        "advlist autolink lists link image charmap print preview anchor",
+        "searchreplace visualblocks code fullscreen",
+        "insertdatetime media table contextmenu paste imagetools"
+    ],
+  toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | link image',
+  });
+  </script>
