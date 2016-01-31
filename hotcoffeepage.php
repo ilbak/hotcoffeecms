@@ -81,7 +81,7 @@ case 1:
 		echo "<input type='hidden' name='pageobj' value='1'>";
 		echo "<input type='hidden' name='pageedit' value='1'>";
 		echo "<input type='hidden' name='pag' value='".$pag."'>";
-		echo "<textarea name='pagepost' rows=30 cols=50>".$pagecontent."</textarea><br />";
+		echo "<textarea name='pagepost' rows=30 cols=50  id='mytextarea'>".$pagecontent."</textarea><br />";
 		echo "<br><br>Password: <input type='password' name='pagepass2' value='' size='15'><br/>";
 		echo "<input type='reset' value='Reset'><input type='submit' value='OK'></center></fieldset></form>";
 		
@@ -112,3 +112,16 @@ case 1:
 	
 }
 ?>
+  <script src='http://cdn.tinymce.com/4/tinymce.min.js'></script>
+  <script>
+  tinymce.init({
+    selector: '#mytextarea',
+ height: 500,
+ plugins: [
+        "advlist autolink lists link image charmap print preview anchor",
+        "searchreplace visualblocks code fullscreen",
+        "insertdatetime media table contextmenu paste imagetools"
+    ],
+  toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | link image',
+  });
+  </script>
