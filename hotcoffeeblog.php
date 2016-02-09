@@ -334,7 +334,7 @@ case 1:
 		$bloglink=$post;
 		$bloglinktitolo=$blogtitolo;
 		sociallink($bloglink, $bloglinktitolo);
-		echo "[".date("d/m/y",$blogjunk4[1]). "]</div>";
+		echo "[".date("d/m/y",$post). "]</div>";
 		echo $blogpostafter;
 		
 		echo "<br>";
