@@ -100,16 +100,16 @@ function bbcode($var,$blogtag) {
 	return $var;
 } 
 
-function creafeed($pag, $cmsdir, $blogdir, $cmsurl, $blogmail) {
+function creafeed($pag, $cmsdir, $blogdir, $cmsurl, $blogmail, $blogfeedtitolo, $blogfeeddesc) {
 	// Feed creation
 	$blogjunk2=$pag."-rss.xml";
 	$blogjunk5 = fopen($blogjunk2, "w");
 	fwrite($blogjunk5, "<?xml version=\"1.0\"?>\n");
 	fwrite($blogjunk5, "<rss version=\"2.0\" xmlns:atom=\"http://www.w3.org/2005/Atom\"> \n");
 	fwrite($blogjunk5, "<channel>\n");
-	fwrite($blogjunk5, "<title>".$blogfeedtitolo."</title>\n");
+	fwrite($blogjunk5, "<title>".htmlentities($blogfeedtitolo)."</title>\n");
 	fwrite($blogjunk5, "<link>".$cmsurl."</link>\n");
-	fwrite($blogjunk5, "<description>".$blogfeeddesc."</description>\n");
+	fwrite($blogjunk5, "<description>".htmlentities($blogfeeddesc)."</description>\n");
 	fwrite($blogjunk5, "<atom:link href=\"".$cmsurl.$blogjunk2."\" rel=\"self\" type=\"application/rss+xml\" /> \n");
 	
 	
@@ -137,12 +137,12 @@ function creafeed($pag, $cmsdir, $blogdir, $cmsurl, $blogmail) {
 		        		$blogpost = stripslashes($blogpost);
 		        		
 		        		fwrite($blogjunk5, "<item>\n");
-		        		fwrite($blogjunk5, "<title>".$blogtitolo."</title>\n");
+		        		fwrite($blogjunk5, "<title>".htmlentities($blogtitolo)."</title>\n");
 		        		$blogjunk7=str_replace("&", "&amp;", $cmsurl."index.php?pag=".$pag."&post=".$blogjunk4[1]);
 		        		
 		        		fwrite($blogjunk5, "<link>".$blogjunk7."</link>\n");
 		        		fwrite($blogjunk5, "<guid>".$blogjunk7."</guid>\n");
-		        		fwrite($blogjunk5, "<description>".$cmsurl." - ".$blogtitolo."</description>\n");
+		        		fwrite($blogjunk5, "<description>".$cmsurl." - ".htmlentities($blogtitolo)."</description>\n");
 		        		fwrite($blogjunk5, "<author>".$blogmail." (".$cmsurl.")</author>\n");
 		        		fwrite($blogjunk5, "</item>\n");
 		        		$blogcount++;
@@ -380,7 +380,7 @@ case 2:
 				fwrite($blogjunk, "\$blogpost=\"".$blogmodpost."\";\n");
 				fwrite($blogjunk, "?>");
 				fclose($blogjunk);
-				creafeed($pag, $cmsdir, $blogdir, $cmsurl, $blogmail);
+				creafeed($pag, $cmsdir, $blogdir, $cmsurl, $blogmail, $blogfeedtitolo, $blogfeeddesc);
 				erroreclean($pag);
 				echo "<br>Post creato con successo!<br><br>";
 				echo "<script> location.href='index.php?pag=".$pag."'</script>";
@@ -432,7 +432,7 @@ case 4:
 			if ($blogmodpost== ""){
 				// Delete empty post
 				unlink($blogdir.$pag."-".$post."-post-none.php");
-				creafeed($pag, $cmsdir, $blogdir, $cmsurl, $blogmail);
+				creafeed($pag, $cmsdir, $blogdir, $cmsurl, $blogmail, $blogfeedtitolo, $blogfeeddesc);
 				erroreclean($pag);
 				echo "<br>Post deleted!<br><br>";
 				echo "<script> location.href='index.php?pag=".$pag."'</script>";
@@ -451,7 +451,7 @@ case 4:
 				fwrite($blogjunk, "\$blogpost=\"".$blogmodpost."\";\n");
 				fwrite($blogjunk, "?>");
 				fclose($blogjunk);
-				creafeed($pag, $cmsdir, $blogdir, $cmsurl, $blogmail);
+				creafeed($pag, $cmsdir, $blogdir, $cmsurl, $blogmail, $blogfeedtitolo, $blogfeeddesc);
 				erroreclean($pag);
 				echo "<br>Post modified!<br><br>";
 				echo "<script> location.href='index.php?pag=".$pag."&post=".$post."'</script>";
