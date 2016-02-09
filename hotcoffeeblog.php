@@ -5,6 +5,7 @@
 
 
 
+
 /* Start Setup */
 
 // Password for blog author (change it!)
@@ -35,6 +36,7 @@ $blogfeedtitolo="RSS Feed: ".$cmsurl;
 $blogfeeddesc="The ".$cmsurl." RSS Feed";
 
 /* End Setup */
+
 
 
 
@@ -401,9 +403,7 @@ case 2:
 		echo "<input type='hidden' name='pag' value='.$pag.'>";
 		echo "<center>Title:<br><input type='text' name='blogmodtitolo' value='....' size='40'><br/>";
 		echo "Content:<br><textarea name='blogmodpost' rows=20 cols=40 id='mytextarea'>Content.</textarea>";
-		
-		
-		echo "<br><br><fieldset><legend>BBCode</legend>[left]A sinistra[left] - [center]Centrato[/center] - [right]A destra[/right] - [justify]Giustificato[/justify]<br>[b]Grassetto[/b] - [u]Sottolineato[/u] - [i]Corsivo[/i] - [del]Cancellato[/del]<br>[color=red]Colore[/color] - [size=40]Dimensione[/size] - [spoiler]Nascosto[/spoiler]<br>[quote]Citazione[/quote] - [code]Codice[/code] - [youtube]Codice video[/youtube]<br>[url=http://www.sitoda.linkare/]Link[/url] - [img]http://www.Immagine.gif[/img]<br></fieldset><br>";
+
 		echo "<br>Password: <input type='password' name='blogmodpass' value='' size='15'><br/>";
 		echo "<input type='reset' value='Reset'><input type='submit' value='OK'></center></fieldset></form>";
 		
@@ -474,7 +474,6 @@ case 4:
 		echo "<center>Titolo:<br><input type='text' name='blogmodtitolo' value='".stripslashes($blogtitolo)."' size='40'><br/>";
 		echo "Post:<br><textarea name='blogmodpost' rows=20 cols=40 id='mytextarea'>".stripslashes($blogpost)."</textarea>";
 		
-		echo "<br><br><fieldset><legend>BBCode</legend>[left]A sinistra[left] - [center]Centrato[/center] - [right]A destra[/right] - [justify]Giustificato[/justify]<br>[b]Grassetto[/b] - [u]Sottolineato[/u] - [i]Corsivo[/i] - [del]Cancellato[/del]<br>[color=red]Colore[/color] - [size=40]Dimensione[/size] - [spoiler]Nascosto[/spoiler]<br>[quote]Citazione[/quote] - [code]Codice[/code] - [youtube]Codice video[/youtube]<br>[url=http://www.sitoda.linkare/]Link[/url] - [img]http://www.Immagine.gif[/img]<br></fieldset><br>";
 		echo "<br>Password: <input type='password' name='blogmodpass' value='' size='15'><br/>";
 		echo "<input type='reset' value='Reset'><input type='submit' value='OK'></center></fieldset></form>";
 		
