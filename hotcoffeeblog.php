@@ -42,6 +42,24 @@ $blogfeeddesc="The ".$cmsurl." RSS Feed";
 
 if (!isset($cmspagina)) { die(); }
 
+function permalink($permajunk) {
+// Permalink creation
+	$permajunk = strtolower($permajunk);
+	$permajunk = preg_replace("/[^0-9A-Za-z ]/", "", $permajunk);
+	$permajunk = str_replace(" ", "-", $permajunk);
+	$permajunk = str_replace('\"', ' ', $permajunk);
+	$permajunk = str_replace('è', 'e', $permajunk);
+	$permajunk = str_replace('ì', 'i', $permajunk);
+	$permajunk = str_replace('ù', 'u', $permajunk);
+	$permajunk = str_replace('ò', 'o', $permajunk);
+	$permajunk = str_replace('à', 'a', $permajunk);
+
+	while (strstr($permajunk, "--")) {
+		$permajunk = preg_replace("/--/", "-", $permajunk);
+	}
+	return($permajunk);
+}
+
 function bbcode($var,$blogtag) {
 	// Decodifica bbcode
 	
@@ -140,7 +158,7 @@ function creafeed($pag, $cmsdir, $blogdir, $cmsurl, $blogmail, $blogfeedtitolo, 
 		        		
 		        		fwrite($blogjunk5, "<item>\n");
 		        		fwrite($blogjunk5, "<title>".htmlentities($blogtitolo)."</title>\n");
-		        		$blogjunk7=str_replace("&", "&amp;", $cmsurl."index.php?pag=".$pag."&post=".$blogjunk4[1]);
+  				        $blogjunk7=str_replace("&", "&amp;", $cmsurl."index.php?pag=".$pag."&post=".$blogjunk4[1]."-".permalink($blogtitolo));
 		        		
 		        		fwrite($blogjunk5, "<link>".$blogjunk7."</link>\n");
 		        		fwrite($blogjunk5, "<guid>".$blogjunk7."</guid>\n");
@@ -200,7 +218,7 @@ function erroreclean($pag) {
 function sociallink($bloglink, $bloglinktitolo) {
 	// Creation feature links to share on social networks
 	global $cmsurl, $pag;
-	$bloglink=urlencode($cmsurl."index.php?pag=".$pag."&post=".$bloglink);
+	$bloglink=urlencode($cmsurl."index.php?pag=".$pag."&post=".$bloglink)."-".permalink($bloglinktitolo);
 	
 	echo "<a href='http://www.facebook.com/sharer/sharer.php?u=".$bloglink."&amp;t=".$bloglinktitolo."' target='_blank' title='Share \"$bloglinktitolo\" on Facebook'>[f]</a>&nbsp;&nbsp;";
 	echo "<a href='https://twitter.com/intent/tweet?text=".urlencode($bloglinktitolo)."&url=".$bloglink."' target='_blank' title='Share \"$bloglinktitolo\" on Twitter'>[t]</a>&nbsp;&nbsp;";
@@ -278,8 +296,8 @@ case 0:
 						$blogjunk6 = strpos($blogpost, "||");
 						if ($blogjunk6 !== false) { $bloganteprima2=$blogjunk6; } else { $bloganteprima2=$bloganteprima; }
 						echo $blogpostbefore;
-						echo "<div align=center><h3><a href='index.php?pag=".$pag."&post=".$blogjunk4[1]."'><b>".$blogtitolo."</b></a></h3></div><br>".bbcode(substr($blogpost, 0, $bloganteprima2), $blogtag);
-						if (strlen($blogpost) > $bloganteprima2) { echo "<br><a href='index.php?pag=".$pag."&post=".$blogjunk4[1]."'><i>[ More... ]</i></a>"; }
+						echo "<div align=center><h3><a href='index.php?pag=".$pag."&post=".$blogjunk4[1]."-".permalink($blogtitolo)."'><b>".$blogtitolo."</b></a></h3></div><br>".bbcode(substr($blogpost, 0, $bloganteprima2), $blogtag);
+						if (strlen($blogpost) > $bloganteprima2) { echo "<br><a href='index.php?pag=".$pag."&post=".$blogjunk4[1]."-".permalink($blogtitolo)."'><i>[ More... ]</i></a>"; }
 						echo "<div align=right>";
 						// Social link
 						$bloglink=$blogjunk4[1];
