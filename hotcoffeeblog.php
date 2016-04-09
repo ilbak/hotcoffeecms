@@ -159,11 +159,11 @@ function creafeed($pag, $cmsdir, $blogdir, $cmsurl, $blogmail, $blogfeedtitolo, 
 		        		fwrite($blogjunk5, "<item>\n");
 		        		fwrite($blogjunk5, "<title>".htmlentities($blogtitolo)."</title>\n");
   				        $blogjunk7=str_replace("&", "&amp;", $cmsurl."index.php?pag=".$pag."&post=".$blogjunk4[1]."-".permalink($blogtitolo));
-		        		
 		        		fwrite($blogjunk5, "<link>".$blogjunk7."</link>\n");
 		        		fwrite($blogjunk5, "<guid>".$blogjunk7."</guid>\n");
 		        		fwrite($blogjunk5, "<description>".$cmsurl." - ".htmlentities($blogtitolo)."</description>\n");
 		        		fwrite($blogjunk5, "<author>".$blogmail." (".$cmsurl.")</author>\n");
+		        		fwrite($blogjunk5, "<updated>".date(DATE_ATOM, $blogjunk4[1])."</updated>\n");
 		        		fwrite($blogjunk5, "</item>\n");
 		        		$blogcount++;
 		        	}
