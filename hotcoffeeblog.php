@@ -385,7 +385,6 @@ case 2:
 				
 			} else {
 				// Write new post
-				$blogmodpost = str_replace("\n", "<br />", $blogmodpost);
 				// Resolve string invisibility
 				$blogmodpost = str_replace("\\$", "\$", str_replace("\$", "$", $blogmodpost));
 				$blogjunktime = time();
@@ -457,7 +456,6 @@ case 4:
 			} else {
 				// Save the post modification
 				
-				$blogmodpost = str_replace("\n", "<br />", $blogmodpost);
 				// Resolve string inisibility
 				$blogmodpost = str_replace("\\$", "\$", str_replace("\$", "$", $blogmodpost));
 				$blogjunk2=$pag."-".$post."-post-none.php";
@@ -482,8 +480,7 @@ case 4:
 		
 		
 	} else {
-		$blogpost = str_replace("<br />", "\n", $blogpost);
-		
+
 		echo "<form method='post'><fieldset><legend>Edit</legend>";
 		echo "<input type='hidden' name='blogobj' value='4'>";
 		echo "<input type='hidden' name='blogedit' value='1'>";
