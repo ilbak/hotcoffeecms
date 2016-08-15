@@ -337,10 +337,14 @@ case 0:
 	
 	
 case 1:
+	
+		$blogjunk=explode('-', $post);
+
 	// Post view
-	if (file_exists($pag."-".$post."-post-none.php")) {
-		
-		include $blogdir.$pag."-".$post."-post-none.php";
+	if (file_exists($pag."-".$blogjunk[0]."-post-none.php")) {
+
+
+		include $blogdir.$pag."-".$blogjunk[0]."-post-none.php";
 		$blogtitolo = stripslashes($blogtitolo);
 		$blogpost = stripslashes($blogpost);
 		
