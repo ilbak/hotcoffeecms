@@ -441,7 +441,9 @@ case 4:
 	
 	// Verification
 	errorever($pag);
-	
+
+	$blogjunk=explode('-', $post);
+	$post=$blogjunk[0];
 	include $blogdir.$pag."-".$post."-post-none.php";
 	$blogtitolo = stripslashes($blogtitolo);
 	$blogpost = stripslashes($blogpost);
