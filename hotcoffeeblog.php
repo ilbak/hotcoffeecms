@@ -61,8 +61,7 @@ function permalink($permajunk) {
 }
 
 function bbcode($var,$blogtag) {
-	// Decodifica bbcode
-	
+
 	$search = array(
                 "/\[center\](.*?)\[\/center\]/is", 
                 "/\[left\](.*?)\[\/left\]/is", 
@@ -180,22 +179,21 @@ function creafeed($pag, $cmsdir, $blogdir, $cmsurl, $blogmail, $blogfeedtitolo, 
 
 
 function errore($pag) {
-	//Scrive un log dell'errore
-	$blogjunk1=time();
+	// Note password error
 	$blogjunk2=$pag."-errore-none.php";
 	$blogjunk5 = fopen($blogjunk2, "w");
 	fwrite($blogjunk5, "<?\n");
 	fwrite($blogjunk5, "\$errip=\"".md5($_SERVER['REMOTE_ADDR'])."\";\n");
-	fwrite($blogjunk5, "\$errtime=\"".$blogjunk1."\";\n");
+	fwrite($blogjunk5, "\$errtime=\"".$blogjunktime."\";\n");
 	fwrite($blogjunk5, "?>");
 	fclose($blogjunk5);
 }
 
 function errorever($pag) {
+	// Verify password error
 	if (file_exists($pag."-errore-none.php")) {
 		
 		include $pag."-errore-none.php";
-		$blogjunk=time();
 		$blogjunk2=$blogjunk-$errtime;
 		if (($errip==md5($_SERVER['REMOTE_ADDR'])) && ($blogjunk2<=20)){
 			echo "This IP is not authorized to operate. Please try again in a few seconds.";
@@ -205,10 +203,10 @@ function errorever($pag) {
 } 
 
 function erroreclean($pag) {
+	// Clean password error
 	if (file_exists($pag."-errore-none.php")) {
 		include $pag."-errore-none.php";
-		$blogjunk=time();
-		$blogjunk2=$blogjunk-$errtime;
+		$blogjunk2=$blogjunktime-$errtime;
 		if ($blogjunk2>20){
 			unlink($pag."-errore-none.php");
 		}
@@ -220,18 +218,23 @@ function sociallink($bloglink, $bloglinktitolo) {
 	global $cmsurl, $pag;
 	$bloglink=urlencode($cmsurl."index.php?pag=".$pag."&post=".$bloglink)."-".permalink($bloglinktitolo);
 	
-	echo "<a href='http://www.facebook.com/sharer/sharer.php?u=".$bloglink."&amp;t=".$bloglinktitolo."' target='_blank' title='Share \"$bloglinktitolo\" on Facebook'>[f]</a>&nbsp;&nbsp;";
-	echo "<a href='https://twitter.com/intent/tweet?text=".urlencode($bloglinktitolo)."&url=".$bloglink."' target='_blank' title='Share \"$bloglinktitolo\" on Twitter'>[t]</a>&nbsp;&nbsp;";
-	echo "<a href='https://plus.google.com/share?url=".$bloglink."&t=".urlencode($bloglinktitolo)."' target='_blank' title='Share \"$bloglinktitolo\" on Google+'>[g+]</a>&nbsp;&nbsp;";
-	echo "<a href='mailto:indirizzo@destinatario.it?subject=Post ".$bloglinktitolo."&body=Segnalazione post ".$bloglinktitolo.": ".$bloglink.".  ' title='Share \"$bloglinktitolo\" via e-mail'>[m]</a>&nbsp;&nbsp;";
+	echo "<a href='http://www.facebook.com/sharer/sharer.php?u=".$bloglink."&amp;t=".$bloglinktitolo."' target='_blank' title='Share \"$bloglinktitolo\" on Facebook'><img src='./Home-facebook.png'></a>&nbsp;&nbsp;";
+	echo "<a href='https://twitter.com/intent/tweet?text=".urlencode($bloglinktitolo)."&url=".$bloglink."' target='_blank' title='Share \"$bloglinktitolo\" on Twitter'><img src='./Home-twitter.png'></a>&nbsp;&nbsp;";
+	echo "<a href='https://plus.google.com/share?url=".$bloglink."&t=".urlencode($bloglinktitolo)."' target='_blank' title='Share \"$bloglinktitolo\" on Google+'><img src='./Home-google.png'></a>&nbsp;&nbsp;";
+	echo "<a href='mailto:indirizzo@destinatario.it?subject=Post ".$bloglinktitolo."&body=Segnalazione post ".$bloglinktitolo.": ".$bloglink.".  ' title='Share \"$bloglinktitolo\" via e-mail'><img src='./Home-mail.png'></a>&nbsp;&nbsp;";
 	
 }
 
 
 // Generic variables
+$blogjunktime = time();
 $blogmodpass = $_POST['blogmodpass'];
 $blogmodtitolo = $_POST['blogmodtitolo'];
 $blogmodpost = $_POST['blogmodpost'];
+$blogmodtimejunk = explode('-', $_POST['blogmodtime']);
+$blogmodtime = substr(trim($blogmodtimejunk[0]), 0, 10);
+
+
 $blogedit=$_POST['blogedit'];
 if ($_GET['blogobj']=="") { $blogobj=$_POST['blogobj']; } else { $blogobj=$_GET['blogobj']; }
 if ($_GET['post']=="") { $post=$_POST['post']; } else { $post=$_GET['post']; }
@@ -244,14 +247,32 @@ $blogpag=$_GET['blogpag'];
 if ($blogpag=="") { $blogpag="10"; }
 
 
+	// Verification IP ban for password error
+	errorever($pag);
+
 switch ($blogobj) {
 case 0:
+
+
+
+	if ($blogedit=="1"){
+		
+		if ($blogmodpass== $blogpass){
+echo "<br><br>!!!! Admin View !!!!<br><br>";
+				erroreclean($pag);
+
+ } else {
+			echo "<br>Password error!<br><br>";
+				errore($pag);
+ }
+}
+
 	
 	// Posts list
 	if ($blogmotd!="") {
 		echo "".$blogmotd."<br><br>";
 	}
-	
+
 	$blogjunkarray=array();
 	$blogjunk2=-1;
 	if (is_dir($cmsdir)) {
@@ -271,11 +292,12 @@ case 0:
 			
 			while ($blogjunk3 < $blogpag) {
 				$blogjunk3++;
-				if (file_exists($blogdir.$blogjunkarray[$blogjunk3])) {
-					
-					// Time post elaboration
+					// If time is pass or admin view is actived list the post
 					$blogjunk4=explode('-', $blogjunkarray[$blogjunk3]);
-					
+if ($blogjunktime > $blogjunk4[1] or $blogedit=="1") {
+// Show post scheduled on Admin View.
+				if (file_exists($blogdir.$blogjunkarray[$blogjunk3])) {
+										
 					include $blogdir.$blogjunkarray[$blogjunk3];
 					$blogtitolo = stripslashes($blogtitolo);
 					$blogpost = stripslashes($blogpost);
@@ -296,7 +318,10 @@ case 0:
 						$blogjunk6 = strpos($blogpost, "||");
 						if ($blogjunk6 !== false) { $bloganteprima2=$blogjunk6; } else { $bloganteprima2=$bloganteprima; }
 						echo $blogpostbefore;
-						echo "<div align=center><h3><a href='index.php?pag=".$pag."&post=".$blogjunk4[1]."-".permalink($blogtitolo)."'><b>".$blogtitolo."</b></a></h3></div><br>".bbcode(substr($blogpost, 0, $bloganteprima2), $blogtag);
+						echo "<div align=center><h3>";
+                        // Post scheduled mark
+						if ($blogjunktime < $blogjunk4[1]) { echo "<b>[!]</b> "; }
+						echo "<a href='index.php?pag=".$pag."&post=".$blogjunk4[1]."-".permalink($blogtitolo)."'><b>".$blogtitolo."</b></a></h3></div><br>".bbcode(substr($blogpost, 0, $bloganteprima2), $blogtag);
 						if (strlen($blogpost) > $bloganteprima2) { echo "<br><a href='index.php?pag=".$pag."&post=".$blogjunk4[1]."-".permalink($blogtitolo)."'><i>[ More... ]</i></a>"; }
 						echo "<div align=right>";
 						// Social link
@@ -309,6 +334,7 @@ case 0:
 						
 					}
 				}
+}
 			}
 		}
 	}
@@ -319,7 +345,7 @@ case 0:
 	
 	echo "<form method='post'>";
 	echo "Search on ".$pag.": <input type='text' name='blogricerca' value='' size='10'>";
-	echo "<input type='submit' value='Cerca'></form>";
+	echo "<input type='submit' value='Cerca'></form><br>";
 	if ($blogtag!="") {
 		echo "Cerca per tag:&nbsp;&nbsp;";
 		$blogtagarray= explode(",", $blogtag);
@@ -328,10 +354,14 @@ case 0:
 			echo "<a href='index.php?pag=".$pag."&blogricerca=".$blogtagarray[$blogjunk7]."'>#".$blogtagarray[$blogjunk7]."</a>&nbsp;&nbsp;";
 		}
 	}
+
+	echo "<br><br>";
+		echo "<form method='post'><input type='hidden' name='blogobj' value='0'><input type='hidden' name='blogedit' value='1'> Admin: <input type='password' name='blogmodpass' value='' size='15'><input type='submit' value='OK'></form>";
 	echo "<br><br>";
 	echo "<a href='".$pag."-rss.xml' title='Feed RSS'>&nbsp;&nbsp;&nbsp;&nbsp;[ Feed RSS ]&nbsp;&nbsp;&nbsp;&nbsp;</a>";
 	echo "<a href='index.php?pag=".$pag."&blogobj=2'>&nbsp;&nbsp;&nbsp;&nbsp;[ New post ]&nbsp;&nbsp;&nbsp;&nbsp;</a><br>";
 	echo "<br><br>";
+
 	
 	break;
 	
@@ -376,9 +406,7 @@ case 1:
 	
 case 2:
 	
-	// Verification
-	errorever($pag);
-	
+
 	// New post
 	if ($blogedit=="1"){
 		
@@ -389,10 +417,11 @@ case 2:
 				
 			} else {
 				// Write new post
+
+
 				// Resolve string invisibility
 				$blogmodpost = str_replace("\\$", "\$", str_replace("\$", "$", $blogmodpost));
-				$blogjunktime = time();
-				$blogjunk2=$pag."-".$blogjunktime."-post-none.php";
+				$blogjunk2=$pag."-".$blogmodtime."-post-none.php";
 				$blogjunk = fopen($blogjunk2, "w");
 				
 				$blogmodtitolo = addslashes($blogmodtitolo);
@@ -424,8 +453,9 @@ case 2:
 		echo "<input type='hidden' name='pag' value='.$pag.'>";
 		echo "<center>Title:<br><input type='text' name='blogmodtitolo' value='....' size='40'><br/>";
 		echo "Content:<br><textarea name='blogmodpost' rows=20 cols=40 id='mytextarea'>Content.</textarea>";
+echo "<br>Time: <input class='datepicker-here' type='text' data-timepicker='true' data-language='en' data-date-format='@' data-time-format='- hh:ii' name='blogmodtime' value='$blogjunktime' readonly /><br>";
 
-		echo "<br>Password: <input type='password' name='blogmodpass' value='' size='15'><br/>";
+		echo "<br>Password: <input type='password' name='blogmodpass' value='' size='15'><br/><br/>";
 		echo "<input type='reset' value='Reset'><input type='submit' value='OK'></center></fieldset></form>";
 		
 	}
@@ -439,11 +469,10 @@ case 2:
 case 4:
 	// Edit post
 	
-	// Verification
-	errorever($pag);
 
-	$blogjunk=explode('-', $post);
-	$post=$blogjunk[0];
+$blogjunk=explode('-', $post);
+$post=$blogjunk[0];
+
 	include $blogdir.$pag."-".$post."-post-none.php";
 	$blogtitolo = stripslashes($blogtitolo);
 	$blogpost = stripslashes($blogpost);
@@ -461,6 +490,12 @@ case 4:
 				echo "<script> location.href='index.php?pag=".$pag."'</script>";
 			} else {
 				// Save the post modification
+
+if ($blogmodtime <> $post) {
+// Save the post time modification
+    rename($blogdir.$pag."-".$post."-post-none.php", $blogdir.$pag."-".$blogmodtime."-post-none.php");
+    $post=$blogmodtime;
+}
 				
 				// Resolve string inisibility
 				$blogmodpost = str_replace("\\$", "\$", str_replace("\$", "$", $blogmodpost));
@@ -490,10 +525,11 @@ case 4:
 		echo "<form method='post'><fieldset><legend>Edit</legend>";
 		echo "<input type='hidden' name='blogobj' value='4'>";
 		echo "<input type='hidden' name='blogedit' value='1'>";
-		echo "<input type='hidden' name='pag' value='.$pag.'>";
-		echo "<input type='hidden' name='post' value='.$post.'>";
+		echo "<input type='hidden' name='pag' value='$pag'>";
+		echo "<input type='hidden' name='post' value='$post'>";
 		echo "<center>Titolo:<br><input type='text' name='blogmodtitolo' value='".stripslashes($blogtitolo)."' size='40'><br/>";
 		echo "Post:<br><textarea name='blogmodpost' rows=20 cols=40 id='mytextarea'>".stripslashes($blogpost)."</textarea>";
+echo "<br>Time: <input class='datepicker-here' type='text' data-timepicker='true' data-language='en' data-date-format='@' data-time-format='- hh:ii' name='blogmodtime' value='$blogjunktime' readonly /><br>";
 		
 		echo "<br>Password: <input type='password' name='blogmodpass' value='' size='15'><br/>";
 		echo "<input type='reset' value='Reset'><input type='submit' value='OK'></center></fieldset></form>";
@@ -566,8 +602,15 @@ case 6:
 	
 }
 ?>
-  <script src='http://cdn.tinymce.com/4/tinymce.min.js'></script>
-  <script>
+<script  src="https://code.jquery.com/jquery-3.2.1.min.js"  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="  crossorigin="anonymous"></script>
+
+ <link href="https://cdnjs.cloudflare.com/ajax/libs/air-datepicker/2.2.3/css/datepicker.min.css" rel="stylesheet" type="text/css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/air-datepicker/2.2.3/js/datepicker.min.js"></script>
+        <!-- Include English language -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/air-datepicker/2.2.3/js/i18n/datepicker.en.js"></script>
+        
+        
+  <script src='http://cdn.tinymce.com/4/tinymce.min.js'></script><script>
   tinymce.init({
     selector: '#mytextarea',
  height: 500,
@@ -579,3 +622,4 @@ case 6:
   toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | link image',
   });
   </script>
+
