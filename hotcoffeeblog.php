@@ -529,7 +529,7 @@ if ($blogmodtime <> $post) {
 		echo "<input type='hidden' name='post' value='$post'>";
 		echo "<center>Titolo:<br><input type='text' name='blogmodtitolo' value='".stripslashes($blogtitolo)."' size='40'><br/>";
 		echo "Post:<br><textarea name='blogmodpost' rows=20 cols=40 id='mytextarea'>".stripslashes($blogpost)."</textarea>";
-echo "<br>Time: <input class='datepicker-here' type='text' data-timepicker='true' data-language='en' data-date-format='@' data-time-format='- hh:ii' name='blogmodtime' value='$blogjunktime' readonly /><br>";
+echo "<br>Time: <input class='datepicker-here' type='text' data-timepicker='true' data-language='en' data-date-format='@' data-time-format='- hh:ii' name='blogmodtime' value='$post' readonly /><br>";
 		
 		echo "<br>Password: <input type='password' name='blogmodpass' value='' size='15'><br/>";
 		echo "<input type='reset' value='Reset'><input type='submit' value='OK'></center></fieldset></form>";
