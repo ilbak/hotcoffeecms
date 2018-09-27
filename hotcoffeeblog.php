@@ -138,8 +138,12 @@ function creafeed($pag, $cmsdir, $blogdir, $cmsurl, $blogmail, $blogfeedtitolo, 
 		if ($blogjunk = opendir($cmsdir)) {
 		        while (($blogfile = readdir($blogjunk)) !== false) {
 		        	if(stristr($blogfile,'-post-none.php') && (substr($blogfile, 0, strlen($pag)) == $pag ) ) {
-		        		$blogjunk2++;
-		        		$blogjunkarray[$blogjunk2]=$blogfile;
+					$blogjunk6=str_replace( $pag."-", "", str_replace("-post-none.php", "", $blogfile) );
+					if ($blogjunk6 < time() ) {
+	// Adds only posts published before the current time to the feed
+						$blogjunk2++;
+		        			$blogjunkarray[$blogjunk2]=$blogfile;
+					}
 		        	}
 		        }
 		        closedir($blogjunk);
