@@ -187,7 +187,7 @@ function errore($pag) {
 	$blogjunk2=$pag."-errore-none.php";
 	$blogjunk5 = fopen($blogjunk2, "w");
 	fwrite($blogjunk5, "<?\n");
-	fwrite($blogjunk5, "\$errip=\"".md5($_SERVER['REMOTE_ADDR'])."\";\n");
+	fwrite($blogjunk5, "\$errip=\"".md5($_SERVER['HTTP_X_FORWARDED_FOR'])."\";\n");
 	fwrite($blogjunk5, "\$errtime=\"".$blogjunktime."\";\n");
 	fwrite($blogjunk5, "?>");
 	fclose($blogjunk5);
@@ -199,7 +199,7 @@ function errorever($pag) {
 		
 		include $pag."-errore-none.php";
 		$blogjunk2=$blogjunk-$errtime;
-		if (($errip==md5($_SERVER['REMOTE_ADDR'])) && ($blogjunk2<=20)){
+		if (($errip==md5($_SERVER['HTTP_X_FORWARDED_FOR'])) && ($blogjunk2<=20)){
 			echo "This IP is not authorized to operate. Please try again in a few seconds.";
 			die(); 
 		}
