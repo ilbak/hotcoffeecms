@@ -1,7 +1,7 @@
 <?php
-/*	 )  	                                     		    */
-/*	 (  	Hot Coffee CMS                       		    */
-/*	[_])	http://www.redrosesas.com/hotcoffeecms/	    */
+/*	 )  	                                     		*/
+/*	 (  	Hot Coffee CMS                       		*/
+/*	[_])	http://www.redrosesas.com/hotcoffeecms/	    	*/
 
 
 
@@ -12,10 +12,17 @@ if ($cmspagina=="") { $cmspagina="0"; }
 if ($_GET['pag']=="") { $pag=$_POST['pag']; } else { $pag=$_GET['pag']; }
 if ((!file_exists($pag.".php")) or ($pag=="")) { $pag="Home"; }
 $cmsdir=str_replace("index.php", "", $_SERVER['SCRIPT_FILENAME']);
-$cmsurl="http://".str_replace("index.php", "", $_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF']);
 
-
-
+// Detects if the connection is https
+$cmsissecure = false;
+if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
+    $cmsissecure = true;
+}
+elseif (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https' || !empty($_SERVER['HTTP_X_FORWARDED_SSL']) && $_SERVER['HTTP_X_FORWARDED_SSL'] == 'on') {
+    $cmsissecure = true;
+}
+$REQUEST_PROTOCOL = $cmsissecure ? 'https' : 'http';
+$cmsurl = $REQUEST_PROTOCOL . "://$_SERVER[HTTP_HOST]";
 
 // Publish blocks
 if(!function_exists('cmspubblica')){
