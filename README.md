@@ -31,3 +31,10 @@ The php files with the suffix "-sx.php" (left) and "-dx.php" (right) are loaded 
 Hot Coffee CMS can be integrated into any theme, including the "hotcoffeecms.php" file in the "index.php" file that sets the theme.
 You can use the "index.php" file on the Hot Coffee CMS website and modify it for your needs or learn how to include the CMS in other themes.
 The "index.php" that you find already contains everything you need to set up your site, change the title, the colors and you're done!
+
+---
+# About
+Hot Coffee comes from my desire for a fast, minimalist and highly adaptable system for the creation and management of websites.
+A site created with Hot Coffe can be hosted in any hosting service or private server and can be coined and exported in seconds.
+For information and help you can contact me via the web: <a href="https://www.ilbak.it/">www.ilbak.it</a>.
+
