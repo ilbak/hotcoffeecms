@@ -1,7 +1,6 @@
 <img src="https://a.fsdn.com/allura/p/hotcoffeecms/icon?1509012589">
 
-# hotcoffeecms
-Hot Coffee is a simple CMS written in PHP that does not require any additional element occupies only 4 kb.
+<b>Hot Coffee</b> is a simple CMS written in PHP that does not require any additional element occupies only 4 kb.
 
 Engaging directly with the models in HTML, allows you to quickly create a website compatible with all standard HTML and CSS.
 
