@@ -6,7 +6,7 @@ Hot Coffee is a simple CMS written in PHP that does not require any additional e
 Engaging directly with the models in HTML, allows you to quickly create a website compatible with all standard HTML and CSS.
 
 ---
-# Getting start...
+# Getting started...
 
 - Upload the hotcoffeecms.php and index.php file to your web space
 - Open index.php from the browser and your site will be active.
@@ -20,7 +20,8 @@ Change your home file to your liking and create a php file for each page that wi
 The structure of the site is designed in a minimalist way:
 The file hotcoffeecms.php, index.php and Home.php will be in the main directory and every new PHP file in the folder will be counted by the CMS as a new page and automatically listed in the navigation bar.
 
-If you want to create secondary, unlisted pages, add the "-none.php" suffix to the page file name. For example: "Contact.php" will be listed in the navigation bar, renaming it to "Contact-none.php" will not be listed.
+If you want to create secondary, unlisted pages, add the "-none.php" suffix to the page file name.
+<i>For example: "Contact.php" will be listed in the navigation bar, renaming it to "Contact-none.php" will not be listed.</i>
 
 ---
 # Widget
