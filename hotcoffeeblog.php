@@ -1,7 +1,9 @@
 <?
-/*	 )  	                                        */
-/*	 (  	Hot Coffee Blog                         */
-/*	[_])	http://www.redrosesas.com/hotcoffeecms/ */
+/*	 C 
+	 M  	Hot Coffee CMS - Hod Coffee Blog
+	 S 
+	[_])	https://github.com/ilbak/hotcoffeecms */
+
 
 
 
