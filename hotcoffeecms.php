@@ -1,9 +1,8 @@
 <?php
-/*	 )  	                                     		*/
-/*	 (  	Hot Coffee CMS                       		*/
-/*	[_])	http://www.redrosesas.com/hotcoffeecms/	    	*/
-
-
+/*	 C 
+	 M  	Hot Coffee CMS - Core
+	 S 
+	[_])	https://github.com/ilbak/hotcoffeecms */
 
 
 if (!stristr($_SERVER['SCRIPT_FILENAME'], "index.php"))  { echo "<script> location.href='index.php'</script>";  }
