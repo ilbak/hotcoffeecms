@@ -33,11 +33,6 @@ You can use the "index.php" file on the Hot Coffee CMS website and modify it for
 The "index.php" that you find already contains everything you need to set up your site, change the title, the colors and you're done!
 
 ---
-# Hot Coffee Blog
-Download "hotcoffeeblog.php" and upload it to your Hot Coffee site to get a small blog platform.
-In the few lines at the beginning of the file you will find all the settings that can be useful.
-
----
 # Hot Coffee Page
 Download "hotcoffeepage.php" and upload it to your Hot Coffee website to have a page that can be edited using a convenient web interface.
 
