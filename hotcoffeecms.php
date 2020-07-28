@@ -7,8 +7,8 @@
 
 if (!stristr($_SERVER['SCRIPT_FILENAME'], "index.php"))  { echo "<script> location.href='index.php'</script>";  }
 // Generic variables
-if ($cmspagina=="") { $cmspagina="0"; }
-if ($_GET['pag']=="") { $pag=$_POST['pag']; } else { $pag=$_GET['pag']; }
+if (!$cmspagina) { $cmspagina="0"; }
+if ($_REQUEST['pag']) { $pag=$_REQUEST['pag']; }
 if ((!file_exists($pag.".php")) or ($pag=="")) { $pag="Home"; }
 $cmsdir=str_replace("index.php", "", $_SERVER['SCRIPT_FILENAME']);
 
