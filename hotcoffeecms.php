@@ -1,18 +1,26 @@
-<?php
-/*	 C 
-	 M  	Hot Coffee CMS - Core
-	 S 
-	[_])	https://github.com/ilbak/hotcoffeecms */
+<?php /*
+ C 
+ M  	Hot Coffee CMS - Core
+ S
+[_])	https://github.com/ilbak/hotcoffeecms */
+
+
 
 
 if (!stristr($_SERVER['SCRIPT_FILENAME'], "index.php"))  { echo "<script> location.href='index.php'</script>";  }
 // Generic variables
 if (!$cmspagina) { $cmspagina="0"; }
-if ($_REQUEST['pag']) { $pag=$_REQUEST['pag']; }
-if ((!file_exists($pag.".php")) or ($pag=="")) { $pag="Home"; }
+
+
+if ($_REQUEST['pag'] && file_exists(strtolower($_REQUEST['pag']).".php") ) {
+	$GLOBALS['pag'] = strtolower($_REQUEST['pag']);
+	} else {
+	$GLOBALS['pag'] = "home";
+		}
+
+
 $cmsdir=str_replace("index.php", "", $_SERVER['SCRIPT_FILENAME']);
 
-// Detects if the connection is https
 $cmsissecure = false;
 if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
     $cmsissecure = true;
@@ -23,10 +31,20 @@ elseif (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED
 $REQUEST_PROTOCOL = $cmsissecure ? 'https' : 'http';
 $cmsurl = $REQUEST_PROTOCOL . "://$_SERVER[HTTP_HOST]";
 
+     if (array_key_exists('HTTP_X_FORWARDED_FOR', $_SERVER)) {
+            $cmsip =  $_SERVER["HTTP_X_FORWARDED_FOR"];
+     }else if (array_key_exists('REMOTE_ADDR', $_SERVER)) {
+            $cmsip = $_SERVER["REMOTE_ADDR"];
+     }else if (array_key_exists('HTTP_CLIENT_IP', $_SERVER)) {
+            $cmsip = $_SERVER["HTTP_CLIENT_IP"];
+     }
+
+
+
 // Publish blocks
 if(!function_exists('cmspubblica')){
 
-	function cmspubblica($cmsobj, $cmsdir, $pag, $cmspagina) {
+	function cmspubblica($cmsobj, $cmsdir, $cmspagina) {
 	$cmsmenuarray=array();
 	$cmsmenuarray2=0;
 
@@ -62,22 +80,22 @@ if(!function_exists('cmspubblica')){
 
 
 				if (($cmsobj==".php") AND ($cmspagina=="0")) {
-					if(!stristr($cmsjunkarray[$cmsjunk3],'-dx.php') AND !stristr($cmsjunkarray[$cmsjunk3],'-sx.php') AND ($cmsjunkarray[$cmsjunk3]!='Home.php') ){
+					if(!stristr($cmsjunkarray[$cmsjunk3],'-dx.php') AND !stristr($cmsjunkarray[$cmsjunk3],'-sx.php') AND ($cmsjunkarray[$cmsjunk3]!='home.php') ){
 					// Get menu items
 					$cmsmenuarray[$cmsmenuarray2]=$cmsjunkarray[$cmsjunk3];
 					$cmsmenuarray2++;
 					}
 				}
   			}
-  
+
 		if ($cmsmenuarray2>0) {
 		// Publish menù
 		sort($cmsmenuarray);
-		array_unshift($cmsmenuarray, "Home.php");
+		array_unshift($cmsmenuarray, "home.php");
 
 		$junkmenu6 = count($cmsmenuarray);
 			for($junkmenu7 = 0; $junkmenu7 < $junkmenu6; $junkmenu7++) {
-			echo "<li><a href='index.php?pag=".str_replace(".php", "", $cmsmenuarray[$junkmenu7])."'>".str_replace(".php", "", $cmsmenuarray[$junkmenu7])."</a></li>";
+			echo "<li><a href='?pag=".str_replace(".php", "", $cmsmenuarray[$junkmenu7])."'>".str_replace(".php", "", $cmsmenuarray[$junkmenu7])."</a></li>";
 				}
 	  		}
 		}
@@ -93,27 +111,25 @@ switch ($cmspagina) {
     case 0:
 // Menù
 $cmsobj=".php";
-cmspubblica($cmsobj, $cmsdir, $pag, $cmspagina);
+cmspubblica($cmsobj, $cmsdir, $cmspagina);
 break;
 
     case 1:
 // Left block
 $cmsobj="-sx.php";
-cmspubblica($cmsobj, $cmsdir, $pag, $cmspagina);
+cmspubblica($cmsobj, $cmsdir, $cmspagina);
 break;
 
     case 2:
 // Page content
-include $pag.".php";
+include $GLOBALS['pag'].".php";
 break;
 
     case 3:
 // Right block
 $cmsobj="-dx.php";
-cmspubblica($cmsobj, $cmsdir, $pag, $cmspagina);
+cmspubblica($cmsobj, $cmsdir, $cmspagina);
 break;
 }
-
-
 
 ?>
