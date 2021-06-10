@@ -1,8 +1,8 @@
-<?php /*
- C 
- M  	Hot Coffee CMS - Core
- S
-[_])	https://github.com/ilbak/hotcoffeecms */
+<?php
+/* C 
+	 M  	Hot Coffee CMS - Core
+	 S
+	[_])	https://github.com/ilbak/hotcoffeecms */
 
 
 
@@ -44,6 +44,15 @@ $cmsurl = $REQUEST_PROTOCOL . "://$_SERVER[HTTP_HOST]";
 // Publish blocks
 if(!function_exists('cmspubblica')){
 
+if (file_exists("./{$GLOBALS['pag']}.css")) {
+echo "<link rel='stylesheet' type='text/css' href='".$GLOBALS['pag'].".css'>";
+}
+
+if (file_exists("./{$GLOBALS['pag']}.js")) {
+echo "<script language='JavaScript' type='text/JavaScript' src='".$GLOBALS['pag'].".js'></script>";
+}
+
+
 	function cmspubblica($cmsobj, $cmsdir, $cmspagina) {
 	$cmsmenuarray=array();
 	$cmsmenuarray2=0;
@@ -62,6 +71,8 @@ if(!function_exists('cmspubblica')){
 
 			sort($cmsjunkarray);
 			$cmsjunk2 = count($cmsjunkarray);
+					echo "<ul>";
+
 				for($cmsjunk3 = 0; $cmsjunk3 < $cmsjunk2; $cmsjunk3++) {
 
 					if(stristr($cmsjunkarray[$cmsjunk3],'-sx.php') AND ($cmspagina=="1")){
@@ -87,6 +98,7 @@ if(!function_exists('cmspubblica')){
 					}
 				}
   			}
+					echo "</ul>";
 
 		if ($cmsmenuarray2>0) {
 		// Publish menù
