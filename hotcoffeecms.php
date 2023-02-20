@@ -1,6 +1,6 @@
 <?php
-/* C 
-	 M  	Hot Coffee CMS - Core
+/*   C
+ 	 M  	Hot Coffee CMS - Core
 	 S
 	[_])	https://github.com/ilbak/hotcoffeecms */
 
@@ -9,15 +9,33 @@
 
 if (!stristr($_SERVER['SCRIPT_FILENAME'], "index.php"))  { echo "<script> location.href='index.php'</script>";  }
 // Generic variables
-if (!$cmspagina) { $cmspagina="0"; }
+if (!$cmspagina) { $cmspagina=0; }
+
+
+// Se non esiste htaccess lo crea
+if (!file_exists("./.htaccess") ) {
+$junk = fopen("./.htaccess", "w");
+fwrite($junk, "RewriteEngine On
+RewriteCond %{HTTP:X-Forwarded-Proto} !https
+RewriteCond %{HTTP_HOST} ^www.
+RewriteCond %{HTTPS} off
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301,NE]
+RewriteCond %{HTTP_HOST} !^www\. [NC]
+RewriteRule ^(.*)$ http://www.%{HTTP_HOST}/$1 [R=301,L]
+RewriteRule ^@(.*)$ /?pag=$1 [L,QSA]
+");
+fclose($junk);
+}
 
 
 if ($_REQUEST['pag'] && file_exists(strtolower($_REQUEST['pag']).".php") ) {
 	$GLOBALS['pag'] = strtolower($_REQUEST['pag']);
-	} else {
-	$GLOBALS['pag'] = "home";
-		}
+	}
 
+if (!$GLOBALS['pag']) {
+	$GLOBALS['pag'] = "home";
+	}
+	
 
 $cmsdir=str_replace("index.php", "", $_SERVER['SCRIPT_FILENAME']);
 
