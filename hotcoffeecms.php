@@ -10,102 +10,87 @@
 $scriptChiamante = $_SERVER['SCRIPT_NAME'];
 $GLOBALS['dir'] = ltrim(dirname($scriptChiamante), '/');
 
-// Gestione ban temporanei
-if (isset($_SESSION['tempban'])) {
-    if ((time() - $_SESSION['tempban']) < 120) {
-        die("Temporary error.");
-    } else {
-        unset($_SESSION['tempban']);
-    }
+// Gestione degli errori temporanei
+if (isset($_SESSION['cmserror'])) {
+	if ((time() - $_SESSION['cmserror']) < 120) {
+    die("Temporary error.");
+} elseif (isset($_SESSION['cmserror'])) {
+    unset($_SESSION['cmserror']);
 }
+}
+
+function cmserror($text = "<h1>Error!</h1> <h2>Please wait a few moments before trying again</h2>" ) { $_SESSION['cmserror'] = time(); die($text); }
 
 // Funzione per aggiungere log
 function addlog($text) {
-    $filePath = '.hotcoffeecmslog.php';
+    $filePath = '/home/mhd-01/www.pxzine.com/htdocs/log.php';
     $maxLines = 100;
     $startMarker = "<? /*";
     $endMarker = "*/ ?>";
-    $safeText = htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
 
-    // Verifica se il file è scrivibile
-    if (file_exists($filePath) && !is_writable($filePath)) {
-        throw new Exception("Il file di log non è scrivibile.");
+    // Assicura che il testo sia sicuro da inserire nel file PHP
+    $safeText = addslashes($text);
+
+    if (!file_exists($filePath)) {
+        file_put_contents($filePath, $startMarker . "\n\n" . $endMarker);
     }
 
-    // Apri il file in modalità lettura/scrittura
-    $file = fopen($filePath, 'r+');
-    if (!$file) {
-        throw new Exception("Impossibile aprire il file di log.");
-    }
+    // Leggi il contenuto attuale del file
+    $fileContents = file($filePath, FILE_IGNORE_NEW_LINES);
 
-    // Leggi il contenuto del file
-    $fileContents = [];
-    while (($line = fgets($file)) !== false) {
-        $fileContents[] = trim($line);
-    }
-
-    // Verifica i marker di inizio e fine
+    // Controlla i marker di inizio e fine
     if (trim($fileContents[0]) !== $startMarker || trim(end($fileContents)) !== $endMarker) {
-        fclose($file);
-        throw new Exception("Il file log.php non ha un formato valido.");
+        throw new Exception("Il file console.php non ha un formato valido.");
     }
 
     // Rimuovi i marker temporaneamente
     array_shift($fileContents);
     array_pop($fileContents);
 
-    // Aggiungi il nuovo log in cima
-    array_unshift($fileContents, $safeText);
-
-    // Limita il numero di righe
+    echo "<script>console.log('{$safeText}')</script>";
+    array_unshift($fileContents, $safeText); // Inserisci in cima al log
     $fileContents = array_slice($fileContents, 0, $maxLines);
 
-    // Reinserisci i marker
+    // Reinserisci i marker e salva il file
     array_unshift($fileContents, $startMarker);
     array_push($fileContents, $endMarker);
 
-    // Tronca il file e riscrivi il contenuto
-    ftruncate($file, 0);
-    rewind($file);
-    foreach ($fileContents as $line) {
-        fwrite($file, $line . "\n");
-    }
-
-    fclose($file);
-
-    // Log nella console del browser (solo per debug)
-    echo "<script>console.log('{$safeText}')</script>";
+    file_put_contents($filePath, implode("\n", $fileContents));
 }
 
-// Reindirizzamento a index.php
-//if (!stristr($_SERVER['SCRIPT_FILENAME'], "index.php")) {    header("Location: index.php");    exit; }
+// Redirect to index.php if the script filename isn't index.php
+if (!stristr($_SERVER['SCRIPT_FILENAME'], "index.php")) {
+    header("Location: index.php");
+    exit;
+}
 
-// Imposta la lingua
-if (isset($_REQUEST['lang']) && in_array($_REQUEST['lang'], ['it', 'en', 'fr', 'de', 'es'])) {
+// Set language
+$allowedLanguages = ['it', 'en', 'fr', 'de', 'es'];
+if (isset($_REQUEST['lang']) && in_array($_REQUEST['lang'], $allowedLanguages)) {
     $_SESSION['lang'] = $_REQUEST['lang'];
 } else {
     $_SESSION['lang'] = 'it';
 }
 
-// Imposta variabili di sistema
+// Set system variables
 $cmsdir = rtrim(dirname($_SERVER['SCRIPT_FILENAME']), '/') . '/';
 $cmspath = rtrim(dirname($_SERVER['PHP_SELF']), '/') . '/';
 
-// Rileva se è in uso HTTPS
+// Detect if HTTPS is being used
 $cmsissecure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ||
     (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') ||
     (!empty($_SERVER['HTTP_X_FORWARDED_SSL']) && $_SERVER['HTTP_X_FORWARDED_SSL'] === 'on');
 $REQUEST_PROTOCOL = $cmsissecure ? 'https' : 'http';
 
-// Genera l'URL globale
+// Generate global URL variable
 $host = $_SERVER['HTTP_HOST'];
 $uri = rtrim(str_replace("index.php", "", strtok($_SERVER['REQUEST_URI'], '?')), '/');
 $GLOBALS['cmsurl'] = $REQUEST_PROTOCOL . '://' . $host . $uri . '/';
 
-// Imposta la pagina home di default
+// Set default home page
 $GLOBALS['pag'] = isset($_REQUEST['pag']) ? strtolower($_REQUEST['pag']) : "home";
 
-// Reindirizza a index.php se la pagina richiesta non esiste
+// Redirect to index if requested page file does not exist
 if (!file_exists($cmsdir . $GLOBALS['pag'] . '.php')) {
     if (!file_exists($cmsdir . '404.php')) {
         header("Location: ./index.php");
@@ -115,26 +100,22 @@ if (!file_exists($cmsdir . $GLOBALS['pag'] . '.php')) {
     }
 }
 
-// Analizza i tag dal parametro URL
+// Parse tags from URL parameter
 if (isset($_REQUEST['tag'])) {
     $GLOBALS['tag'] = explode("-", $_REQUEST['tag']);
 }
 
-// Includi il file di inizializzazione se esiste
+// Include initialization file if it exists
 if (file_exists("./hotcoffeecms-init.php")) {
     include "./hotcoffeecms-init.php";
 }
 
-// Funzione per ottenere l'indirizzo IP reale
+// Function to get real IP address
 function getRealIp() {
     $ip_keys = ["HTTP_CLIENT_IP", "HTTP_X_FORWARDED_FOR", "HTTP_X_FORWARDED", "HTTP_FORWARDED_FOR", "HTTP_FORWARDED", "REMOTE_ADDR"];
     foreach ($ip_keys as $key) {
         if (!empty($_SERVER[$key])) {
-            $ip = $_SERVER[$key];
-            if (strpos($ip, ',') !== false) {
-                $ip = explode(',', $ip)[0];
-            }
-            return trim($ip);
+            return $_SERVER[$key];
         }
     }
     return 'UNKNOWN';
@@ -142,31 +123,28 @@ function getRealIp() {
 
 $ip = getRealIp();
 
-// Crea home.php di default se non esiste
+// Create default home.php if it doesn't exist
 if (!file_exists($cmsdir . "home.php")) {
-    $defaultContent = '<?php echo "<h1>Hot Coffee is ready!</h1><p>New site coming soon...</p>"; ?>';
-    file_put_contents($cmsdir . "home.php", $defaultContent);
+    file_put_contents($cmsdir . "home.php", '<?php echo "<h1>Hot Coffee is ready!</h1><p>New site coming soon...</p>"; ?>');
 }
 
-// Includi CSS se esiste per la pagina
+// Include CSS if it exists for the page
 if (file_exists($cmsdir . $GLOBALS['pag'] . ".css")) {
     echo "<link rel='stylesheet' type='text/css' href='{$cmspath}{$GLOBALS['pag']}.css'>";
 }
 
-// Includi JS se esiste per la pagina
+// Include JS if it exists for the page
 if (file_exists($cmsdir . $GLOBALS['pag'] . ".js")) {
     echo "<script src='{$cmspath}{$GLOBALS['pag']}.js' type='text/javascript'></script>";
 }
 
-// Pubblica i blocchi
+// Publish blocks
 if (isset($GLOBALS['cms'])) {
     if (is_array($GLOBALS['cms'])) {
         echo "<ul>";
         foreach ($GLOBALS['cms'] as $item) {
             if (file_exists($cmsdir . $item . ".php")) {
-                echo $item === "home" 
-                    ? "<li><a href='{$cmspath}'>{$item}</a></li>" 
-                    : "<li><a href='{$cmspath}{$item}'>{$item}</a></li>";
+                echo $item === "home" ? "<li><a href='{$cmspath}'>{$item}</a></li>" : "<li><a href='{$cmspath}{$item}'>{$item}</a></li>";
             }
         }
         echo "</ul>";
@@ -196,7 +174,7 @@ if (isset($GLOBALS['cms'])) {
     }
 }
 
-// Pulizia delle variabili globali
+// Clean up global variables
 $GLOBALS['cmssideview'] = false;
 unset($GLOBALS['cms']);
 ?>
