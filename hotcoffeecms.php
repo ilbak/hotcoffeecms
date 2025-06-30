@@ -23,7 +23,7 @@ function cmserror($text = "<h1>Error!</h1> <h2>Please wait a few moments before 
 
 // Funzione per aggiungere log
 function addlog($text) {
-    $filePath = '/home/mhd-01/www.pxzine.com/htdocs/log.php';
+    $filePath = './log.php';
     $maxLines = 100;
     $startMarker = "<? /*";
     $endMarker = "*/ ?>";
