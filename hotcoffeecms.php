@@ -1,57 +1,59 @@
-<?php session_start();
+<?php 
 /*   C
- 	 M  	Hot Coffee CMS - Core - v. 25.02
+ 	 M  	Hot Coffee CMS - Core - v. 25.12
 	 S		> www.ilbak.it
 	[_])	> https://github.com/ilbak/hotcoffeecms 
 
 */
 
-// Determina il percorso completo dello script chiamante
+
+// Determine script
 $scriptChiamante = $_SERVER['SCRIPT_NAME'];
 $GLOBALS['dir'] = ltrim(dirname($scriptChiamante), '/');
 
-// Gestione degli errori temporanei
+// Manage temporary errors
 if (isset($_SESSION['cmserror'])) {
-	if ((time() - $_SESSION['cmserror']) < 120) {
-    die("Temporary error.");
-} elseif (isset($_SESSION['cmserror'])) {
+    // Block
+    if ((time() - $_SESSION['cmserror']) < 120) {
+        die("Temporary error.");
+    } 
+    // Reset
     unset($_SESSION['cmserror']);
 }
+function cmserror($text = "<h1>Error!</h1> <h2>Please wait a few moments before trying again</h2>" ) { 
+    $_SESSION['cmserror'] = time(); 
+    die($text); 
 }
 
-function cmserror($text = "<h1>Error!</h1> <h2>Please wait a few moments before trying again</h2>" ) { $_SESSION['cmserror'] = time(); die($text); }
 
-// Funzione per aggiungere log
+// Add log
 function addlog($text) {
-    $filePath = './log.php';
+    $filePath = '/home/mhd-01/www.pxzine.com/htdocs/log.php';
     $maxLines = 100;
     $startMarker = "<? /*";
     $endMarker = "*/ ?>";
-
-    // Assicura che il testo sia sicuro da inserire nel file PHP
     $safeText = addslashes($text);
 
     if (!file_exists($filePath)) {
         file_put_contents($filePath, $startMarker . "\n\n" . $endMarker);
     }
 
-    // Leggi il contenuto attuale del file
     $fileContents = file($filePath, FILE_IGNORE_NEW_LINES);
 
-    // Controlla i marker di inizio e fine
     if (trim($fileContents[0]) !== $startMarker || trim(end($fileContents)) !== $endMarker) {
-        throw new Exception("Il file console.php non ha un formato valido.");
+        throw new Exception("console.php not valid");
     }
 
-    // Rimuovi i marker temporaneamente
     array_shift($fileContents);
     array_pop($fileContents);
 
-    echo "<script>console.log('{$safeText}')</script>";
-    array_unshift($fileContents, $safeText); // Inserisci in cima al log
+	$safeTextForJs = json_encode($text);
+	echo "<script>console.log({$safeTextForJs})</script>";
+
+    array_unshift($fileContents, $safeText); 
     $fileContents = array_slice($fileContents, 0, $maxLines);
 
-    // Reinserisci i marker e salva il file
+    // Put marker and save
     array_unshift($fileContents, $startMarker);
     array_push($fileContents, $endMarker);
 
@@ -63,6 +65,7 @@ if (!stristr($_SERVER['SCRIPT_FILENAME'], "index.php")) {
     header("Location: index.php");
     exit;
 }
+
 
 // Set language
 $allowedLanguages = ['it', 'en', 'fr', 'de', 'es'];
@@ -88,12 +91,16 @@ $uri = rtrim(str_replace("index.php", "", strtok($_SERVER['REQUEST_URI'], '?')),
 $GLOBALS['cmsurl'] = $REQUEST_PROTOCOL . '://' . $host . $uri . '/';
 
 // Set default home page
-$GLOBALS['pag'] = isset($_REQUEST['pag']) ? strtolower($_REQUEST['pag']) : "home";
+$page = isset($_REQUEST['pag']) ? strtolower($_REQUEST['pag']) : "home";
+// Sanificazione rigorosa: accetta solo lettere, numeri e trattini
+$sanitized_page = preg_replace('/[^a-z0-9-]/', '', strtolower($page));
+$GLOBALS['pag'] = $sanitized_page;
+
 
 // Redirect to index if requested page file does not exist
 if (!file_exists($cmsdir . $GLOBALS['pag'] . '.php')) {
     if (!file_exists($cmsdir . '404.php')) {
-        header("Location: ./index.php");
+echo "<p>[!] Page not found! [!]</p>";
         exit;
     } else {
         $GLOBALS['pag'] = "404";
@@ -128,15 +135,17 @@ if (!file_exists($cmsdir . "home.php")) {
     file_put_contents($cmsdir . "home.php", '<?php echo "<h1>Hot Coffee is ready!</h1><p>New site coming soon...</p>"; ?>');
 }
 
-// Include CSS if it exists for the page
+
+// Include CSS and JS page if exists
+$safe_pag = htmlspecialchars($GLOBALS['pag']);
 if (file_exists($cmsdir . $GLOBALS['pag'] . ".css")) {
-    echo "<link rel='stylesheet' type='text/css' href='{$cmspath}{$GLOBALS['pag']}.css'>";
+    echo "<link rel='stylesheet' type='text/css' href='" . htmlspecialchars($cmspath) . "{$safe_pag}.css'>";
+}
+if (file_exists($cmsdir . $GLOBALS['pag'] . ".js")) {
+    echo "<link rel='stylesheet' type='text/css' href='" . htmlspecialchars($cmspath) . "{$safe_pag}.js'>";
+    echo "<script src='" . htmlspecialchars($cmspath) . "{$safe_pag}.js' type='text/javascript'></script>";
 }
 
-// Include JS if it exists for the page
-if (file_exists($cmsdir . $GLOBALS['pag'] . ".js")) {
-    echo "<script src='{$cmspath}{$GLOBALS['pag']}.js' type='text/javascript'></script>";
-}
 
 // Publish blocks
 if (isset($GLOBALS['cms'])) {
